@@ -50,6 +50,9 @@ dependencies:
   hls.js:
     specifier: ^1.2.1
     version: 1.2.1
+  js-md5:
+    specifier: ^0.8.3
+    version: 0.8.3
   lightgallery:
     specifier: ^2.5.0
     version: 2.5.0
@@ -1731,6 +1734,10 @@ packages:
   /isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==, tarball: https://registry.npm.taobao.org/isexe/-/isexe-2.0.0.tgz}
     dev: true
+
+  /js-md5@0.8.3:
+    resolution: {integrity: sha512-qR0HB5uP6wCuRMrWPTrkMaev7MJZwJuuw4fnwAzRgP4J4/F8RwtodOKpGp4XpqsLBFzzgqIO42efFAyz2Et6KQ==}
+    dev: false
 
   /js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}

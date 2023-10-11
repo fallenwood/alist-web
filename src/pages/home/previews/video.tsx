@@ -11,27 +11,56 @@ import flvjs from "flv.js"
 import Hls from "hls.js"
 import { currentLang } from "~/app/i18n"
 import { VideoBox } from "./video_box"
-import axios from "axios"
+import axios, { AxiosRequestConfig } from "axios"
+import { Blob } from "buffer"
+// @ts-ignore
+import { md5 } from "js-md5"
 
 const Red = "red"
 
-const fetchDandanplayDanmaku = (obj: Obj) => {
-  // console.log(obj.name);
-  const data = {
-    fileName: obj.name.replace(/\.[^/.]+$/, ""),
-    fileSize: obj.size,
-    // Dummy hash to pass dandanplay api argument check
-    fileHash: "658d05841b9476ccc7420b3f0bb21c3b",
-    matchMode: "fileNameOnly",
-  }
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-  }
+const fetchFileMd5 = async (link: string) => {
+  console.log("link", link)
+  try {
+    const config: AxiosRequestConfig = {
+      responseType: "blob",
+      headers: {
+        // 16MB
+        Range: "bytes=0-16777215",
+      },
+    }
+    const response = await axios.get(link, config)
+    const data = response.data as Blob
+    // console.log("data", data);
+    const arrayBuffer = await data.arrayBuffer()
+    // console.log("l", arrayBuffer.byteLength);
+    const hash = md5(arrayBuffer)
+    // console.log("md5", hash);
 
+    return hash
+  } catch {
+    console.log("eror when downloading")
+    return "658d05841b9476ccc7420b3f0bb21c3b"
+  }
+}
+
+const fetchDandanplayDanmaku = (obj: Obj) => {
   const danmaku: () => Promise<any> = async function () {
+    const fileHash = await fetchFileMd5(objStore.raw_url)
+
+    const data = {
+      fileName: obj.name.replace(/\.[^/.]+$/, ""),
+      fileSize: obj.size,
+      // Dummy hash to pass dandanplay api argument check
+      fileHash,
+      matchMode: "hashAndFileName",
+    }
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    }
+
     try {
       const resp = await axios.post(
         "https://api.dandanplay.net/api/v2/match",
