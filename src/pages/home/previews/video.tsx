@@ -17,9 +17,27 @@ import { Blob } from "buffer"
 import { md5 } from "js-md5"
 
 const Red = "red"
-
-const fetchFileMd5 = async (link: string) => {
+const fetchFileMd5 = async (
+  link: string,
+  filename: string,
+): Promise<string> => {
   console.log("link", link)
+
+  try {
+    // TODO: do not hard-encode the url
+    const preflight = await axios.post(
+      `https://danmaku-alist.fallenwood.net/get_md5?link=${encodeURIComponent(
+        link,
+      )}&filename=${encodeURIComponent(filename)}`,
+    )
+
+    if (preflight.status === 200) {
+      return preflight.data.hash
+    }
+  } catch {
+    console.info("preflight failed, continue caluclating...")
+  }
+
   try {
     const config: AxiosRequestConfig = {
       responseType: "blob",
@@ -45,7 +63,9 @@ const fetchFileMd5 = async (link: string) => {
 
 const fetchDandanplayDanmaku = (obj: Obj) => {
   const danmaku: () => Promise<any> = async function () {
-    const fileHash = await fetchFileMd5(objStore.raw_url)
+    const fileHash = await fetchFileMd5(objStore.raw_url, objStore.obj.name)
+
+    console.log("filehash", fileHash)
 
     const data = {
       fileName: obj.name.replace(/\.[^/.]+$/, ""),
@@ -224,7 +244,8 @@ const Preview = () => {
     return false
   })
 
-  const dandanplayDanmakuEnabled = getSettingBool("dandanplay_danmaku_enabled")
+  const dandanplayDanmakuEnabled =
+    true || getSettingBool("dandanplay_danmaku_enabled")
 
   if (subtitle) {
     option.subtitle = {
