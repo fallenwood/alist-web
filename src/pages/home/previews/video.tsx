@@ -24,9 +24,20 @@ const fetchFileMd5 = async (
   console.log("link", link)
 
   try {
+    const preget = await axios.get(
+      `/danmakuhub/md5?filename=${encodeURIComponent(filename)}`,
+    )
+    if (preget.status === 200) {
+      return preget.data.hash
+    }
+  } catch {
+    console.info("preget failed, continue posting...")
+  }
+
+  try {
     // TODO: do not hard-encode the url
     const preflight = await axios.post(
-      `https://danmaku-alist.fallenwood.net/get_md5?link=${encodeURIComponent(
+      `/danmakuhub/md5?link=${encodeURIComponent(
         link,
       )}&filename=${encodeURIComponent(filename)}`,
     )
