@@ -33,8 +33,8 @@ dependencies:
     specifier: ^4.6.2
     version: 4.6.2
   artplayer-plugin-danmuku:
-    specifier: ^4.4.11
-    version: 4.4.11
+    specifier: https://gitpkg.now.sh/fallenwood/ArtPlayer/packages/artplayer-plugin-danmuku?dev1018
+    version: '@gitpkg.now.sh/fallenwood/ArtPlayer/packages/artplayer-plugin-danmuku?dev1018'
   axios:
     specifier: ^1.0.0
     version: 1.1.3
@@ -811,10 +811,6 @@ packages:
       balloon-css: 0.5.2
       promise-polyfill: 7.1.0
       smoothscroll: 0.4.0
-    dev: false
-
-  /artplayer-plugin-danmuku@4.4.11:
-    resolution: {integrity: sha512-/4F8IyB29Bdr1LV1RM3FM7CdiAMsVNOOJ/HY4jaJCXnMAKThQiGa++0PhCJ07nhyGvDcZGRL2/UWJRz9zZJFNw==}
     dev: false
 
   /artplayer@4.6.2:
@@ -3178,4 +3174,10 @@ packages:
 
   /zwitch@2.0.2:
     resolution: {integrity: sha512-JZxotl7SxAJH0j7dN4pxsTV6ZLXoLdGME+PsjkL/DaBrVryK9kTGq06GfKrwcSOqypP+fdXGoCHE36b99fWVoA==}
+    dev: false
+
+  '@gitpkg.now.sh/fallenwood/ArtPlayer/packages/artplayer-plugin-danmuku?dev1018':
+    resolution: {tarball: https://gitpkg.now.sh/fallenwood/ArtPlayer/packages/artplayer-plugin-danmuku?dev1018}
+    name: artplayer-plugin-danmuku
+    version: 4.4.11
     dev: false
