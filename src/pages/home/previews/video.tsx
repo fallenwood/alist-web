@@ -25,9 +25,7 @@ const fetchFileMd5 = async (
 
   try {
     const preget = await axios.get(
-      `https://a.0v0.io/danmakuhub/md5?filename=${encodeURIComponent(
-        filename,
-      )}`,
+      `/danmakuhub/md5?filename=${encodeURIComponent(filename)}`,
     )
     if (preget.status === 200) {
       return preget.data.hash
@@ -39,7 +37,7 @@ const fetchFileMd5 = async (
   try {
     // TODO: do not hard-encode the url
     const preflight = await axios.post(
-      `https://a.0v0.io/danmakuhub/md5?link=${encodeURIComponent(
+      `/danmakuhub/md5?link=${encodeURIComponent(
         link,
       )}&filename=${encodeURIComponent(filename)}`,
     )
