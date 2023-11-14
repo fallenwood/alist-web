@@ -1,6 +1,7 @@
 import { HStack, VStack } from "@hope-ui/solid"
 import { createMemo, createSignal, Show, Suspense } from "solid-js"
 import { Dynamic } from "solid-js/web"
+import { Badge } from "@hope-ui/solid"
 import { FullLoading, SelectWrapper } from "~/components"
 import { objStore } from "~/store"
 import { Download } from "../previews/download"
@@ -31,7 +32,12 @@ const File = () => {
     <Show when={previews().length > 1} fallback={<Download openWith />}>
       <VStack w="$full" spacing="$2">
         <div>
-          <span>Total Visits: {visits()}</span>
+          <span>
+            历史访问{" "}
+            <Badge colorScheme={visits() == -1 ? "danger" : "success"}>
+              {visits()}
+            </Badge>
+          </span>
         </div>
         <HStack w="$full" spacing="$2">
           <SelectWrapper
