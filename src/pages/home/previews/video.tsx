@@ -106,7 +106,7 @@ const fetchDandanplayDanmaku = (obj: Obj) => {
       // chConvert 0 - 不转换，1 - 转换为简体，2 - 转换为繁体。
       // withRelated 是否同时获取关联的第三方弹幕。默认值为 false
       const danmaku_resp = await axios.get(
-        `https://api.dandanplay.net/api/v2/comment/${episode_id}?withRelated=true&chConvert=0`,
+        `/danmakuhub/dandanplay/comment?episode_id=${episode_id}`,
         config,
       )
       const danmaku: Array<any> = danmaku_resp.data["comments"]
