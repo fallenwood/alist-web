@@ -87,5 +87,6 @@
   "version": "Version",
   "video_autoplay": "Video autoplay",
   "video_types": "Video types",
-  "webauthn_login_enabled": "Webauthn login enabled"
+  "webauthn_login_enabled": "Webauthn login enabled",
+  "dandanplay_danmaku_enabled": "Dandanplay danmaku enabled"
 }

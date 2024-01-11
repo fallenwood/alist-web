@@ -2,7 +2,7 @@ import { Box } from "@hope-ui/solid"
 import { createSignal, onCleanup, onMount } from "solid-js"
 import { useRouter, useLink } from "~/hooks"
 import { getSettingBool, objStore } from "~/store"
-import { ObjType } from "~/types"
+import { Obj, ObjType } from "~/types"
 import { ext } from "~/utils"
 import Artplayer from "artplayer"
 import { type Option } from "artplayer/types/option"
@@ -11,6 +11,157 @@ import flvjs from "flv.js"
 import Hls from "hls.js"
 import { currentLang } from "~/app/i18n"
 import { VideoBox } from "./video_box"
+import axios, { AxiosRequestConfig } from "axios"
+import { Blob } from "buffer"
+// @ts-ignore
+import { md5 } from "js-md5"
+
+const Red = "red"
+const fetchFileMd5 = async (
+  link: string,
+  filename: string,
+): Promise<string> => {
+  console.log("link", link)
+
+  try {
+    const preget = await axios.get(
+      `/danmakuhub/md5?filename=${encodeURIComponent(filename)}`,
+    )
+    if (preget.status === 200) {
+      return preget.data.hash
+    }
+  } catch {
+    console.info("preget failed, continue posting...")
+  }
+
+  try {
+    // TODO: do not hard-encode the url
+    const preflight = await axios.post(
+      `/danmakuhub/md5?link=${encodeURIComponent(
+        link,
+      )}&filename=${encodeURIComponent(filename)}`,
+    )
+
+    if (preflight.status === 200) {
+      return preflight.data.hash
+    }
+  } catch {
+    console.info("preflight failed, continue caluclating...")
+  }
+
+  try {
+    const config: AxiosRequestConfig = {
+      responseType: "blob",
+      headers: {
+        // 16MB
+        Range: "bytes=0-16777215",
+      },
+    }
+    const response = await axios.get(link, config)
+    const data = response.data as Blob
+    // console.log("data", data);
+    const arrayBuffer = await data.arrayBuffer()
+    // console.log("l", arrayBuffer.byteLength);
+    const hash = md5(arrayBuffer)
+    // console.log("md5", hash);
+
+    return hash
+  } catch {
+    console.log("eror when downloading")
+    return "658d05841b9476ccc7420b3f0bb21c3b"
+  }
+}
+
+const fetchDandanplayDanmaku = (obj: Obj) => {
+  const danmaku: () => Promise<any> = async function () {
+    const fileHash = await fetchFileMd5(objStore.raw_url, objStore.obj.name)
+
+    console.log("filehash", fileHash)
+
+    const data = {
+      fileName: obj.name.replace(/\.[^/.]+$/, ""),
+      fileSize: obj.size,
+      // Dummy hash to pass dandanplay api argument check
+      fileHash,
+      matchMode: "hashAndFileName",
+    }
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    }
+
+    try {
+      const resp = await axios.post(
+        `/danmakuhub/dandanplay/match`,
+        data,
+        config,
+      )
+      const d = resp.data
+      const match = d["matches"][0]
+      const match_name = `${match["animeTitle"]} - ${match["episodeTitle"]}`
+      const episode_id = match["episodeId"]
+
+      // chConvert 0 - 不转换，1 - 转换为简体，2 - 转换为繁体。
+      // withRelated 是否同时获取关联的第三方弹幕。默认值为 false
+      const danmaku_resp = await axios.get(
+        `/danmakuhub/dandanplay/comment?episode_id=${episode_id}`,
+        config,
+      )
+      const danmaku: Array<any> = danmaku_resp.data["comments"]
+
+      let cvt_danmaku = danmaku.map((e) => {
+        // <d p="23.826000213623,1,25,16777215,1422201084,0,057075e9,757076900">我从未见过如此厚颜无耻之猴</d>
+        // 0:时间(弹幕出现时间)
+        // 1:类型(1从右至左滚动弹幕|6从左至右滚动弹幕|5顶端固定弹幕|4底端固定弹幕|7高级弹幕|8脚本弹幕)
+        // 2:字号
+        // 3:颜色
+        // 4:时间戳 ?  // 5:弹幕池id // 6:用户hash // 7:弹幕id
+        const p = e.p.split(",")
+        return {
+          text: e.m || "",
+          time: Number(p[0]),
+          color: p[3],
+          border: false,
+          mode: p[1] == 5 || p[1] == 4 ? 1 : 0,
+        }
+      })
+
+      cvt_danmaku = [
+        {
+          text: `当前加载的弹幕：`,
+          time: 0,
+          color: Red,
+          border: false,
+          mode: 1,
+        },
+        {
+          text: match_name,
+          time: 0,
+          color: Red,
+          border: false,
+          mode: 1,
+        },
+        ...cvt_danmaku,
+      ]
+      // console.log(cvt_danmaku);
+      return cvt_danmaku
+    } catch {
+      return [
+        {
+          text: "加载弹幕失败了捏",
+          time: 0,
+          color: Red,
+          border: false,
+          mode: 1,
+        },
+      ]
+    }
+  }
+
+  return danmaku
+}
 
 const Preview = () => {
   const { replace, pathname } = useRouter()
@@ -103,19 +254,27 @@ const Preview = () => {
     }
     return false
   })
+
+  const dandanplayDanmakuEnabled =
+    true || getSettingBool("dandanplay_danmaku_enabled")
+
   if (subtitle) {
     option.subtitle = {
       url: proxyLink(subtitle, true),
       type: ext(subtitle.name) as any,
     }
   }
-  if (danmu) {
+  if (dandanplayDanmakuEnabled || danmu) {
+    const danmuku = dandanplayDanmakuEnabled
+      ? fetchDandanplayDanmaku(objStore.obj)
+      : proxyLink(danmu!, true)
+
     option.plugins = [
       artplayerPluginDanmuku({
-        danmuku: proxyLink(danmu, true),
+        danmuku,
         speed: 5,
         opacity: 1,
-        fontSize: 25,
+        fontSize: 20,
         color: "#FFFFFF",
         mode: 0,
         margin: [0, "0%"],
@@ -130,6 +289,7 @@ const Preview = () => {
       }),
     ]
   }
+
   onMount(() => {
     player = new Artplayer(option)
     player.on("video:ended", () => {
