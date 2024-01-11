@@ -94,7 +94,7 @@ const fetchDandanplayDanmaku = (obj: Obj) => {
 
     try {
       const resp = await axios.post(
-        "https://api.dandanplay.net/api/v2/match",
+        `/danmakuhub/dandanplay/match`,
         data,
         config,
       )
