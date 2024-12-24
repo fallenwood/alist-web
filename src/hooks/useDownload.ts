@@ -1,6 +1,6 @@
 import axios from "axios"
 import { local, password, selectedObjs as _selectedObjs } from "~/store"
-import { fsList, notify, pathJoin } from "~/utils"
+import { fsList, notify, pathBase, pathJoin } from "~/utils"
 import { getLinkByDirAndObj, useRouter, useT } from "~/hooks"
 import { useSelectedLink } from "~/hooks"
 import { Obj } from "~/types"
@@ -158,6 +158,29 @@ export const useDownload = () => {
         console.error(e)
         notify.error(`failed to send to aria2: ${e}`)
       }
+    },
+    playlistDownloadSelected: () => {
+      const selectedObjs = _selectedObjs().filter((obj) => !obj.is_dir)
+      let saveName = pathBase(pathname())
+      if (selectedObjs.length === 1) {
+        saveName = selectedObjs[0].name
+      }
+      if (!saveName) {
+        saveName = t("manage.sidemenu.home")
+      }
+      const m3u8Content = selectedObjs.reduce(
+        (acc, obj, index) =>
+          `${acc}#EXTINF:-1,${obj.name}\n${rawLinks(true)[index]}\n`,
+        "#EXTM3U\n",
+      )
+      const m3u8Blob = new Blob([m3u8Content], {
+        type: "application/x-mpegURL",
+      })
+      const a = document.createElement("a")
+      a.href = URL.createObjectURL(m3u8Blob)
+      a.download = `${saveName}.m3u8`
+      a.click()
+      URL.revokeObjectURL(a.href)
     },
   }
 }

@@ -30,6 +30,7 @@
     "refresh": "Refresh",
     "toggle_theme": "Toggle Theme",
     "switch_lang": "Switch Language",
+    "toggle_markdown_toc": "Toggle Outline",
     "toggle_checkbox": "Toggle Checkbox",
     "rename": "Rename",
     "input_new_name": "Input new name",
@@ -50,6 +51,12 @@
     "cancel_select": "Cancel Select",
     "offline_download": "Offline download",
     "offline_download-tips": "One URL per line",
+    "delete_policy": {
+      "delete_on_upload_succeed": "Delete on upload succeed",
+      "delete_on_upload_failed": "Delete on upload failed",
+      "delete_never": "Never delete",
+      "delete_always": "Always delete"
+    },
     "download": "Download",
     "batch_download": "Batch Download",
     "package_download": "Package Download",
@@ -59,6 +66,7 @@
     "send_aria2_success": "Send to aria2 successfully",
     "pre_package_download-tips": "Using streamsaver in the browser instead of the server for package download requires the corresponding storage to support cors, and the unsupported storage will fail.",
     "package_download-tips": "Downloading, please wait don't close the page",
+    "playlist_download": "Playlist Download",
     "upload": "Upload",
     "local_settings": "Local Settings",
     "recursive_move": "Recursive Move",
@@ -104,6 +112,35 @@
       "list": "List View",
       "grid": "Grid View",
       "image": "Image View"
+    },
+    "position_of_header_navbar": "Position of header & nav bar",
+    "position_of_header_navbar_options": {
+      "static": "Normal",
+      "sticky": "Stick to top of page",
+      "only_navbar_sticky": "Only nav bar sticky"
+    },
+    "show_sidebar": "Show sidebar",
+    "show_sidebar_options": {
+      "none": "None",
+      "visible": "Visible"
+    },
+    "list_item_filename_overflow": "List item filename overflow",
+    "list_item_filename_overflow_options": {
+      "ellipsis": "Ellipsis",
+      "scrollable": "Scrollable",
+      "multi_line": "Multi-line"
+    },
+    "open_item_on_checkbox": "Open item on Checkbox",
+    "open_item_on_checkbox_options": {
+      "direct": "Direct",
+      "disable_while_checked": "Disable while checked",
+      "with_ctrl": "With Ctrl/Command hold",
+      "with_alt": "With Alt/Option hold"
+    },
+    "select_with_mouse": "Select item with mouse while checkbox closed",
+    "select_with_mouse_options": {
+      "disabled": "Disabled",
+      "open_item_with_dblclick": "Open item with double click"
     }
   },
   "package_download": {

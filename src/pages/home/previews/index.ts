@@ -3,6 +3,7 @@ import { getIframePreviews } from "~/store"
 import { Obj, ObjType } from "~/types"
 import { ext } from "~/utils"
 import { generateIframePreview } from "./iframe"
+import { useRouter } from "~/hooks"
 
 export interface Preview {
   name: string
@@ -78,11 +79,24 @@ const previews: Preview[] = [
     provider: /^Aliyundrive(Share)?$/,
     component: lazy(() => import("./aliyun_office")),
   },
+  {
+    name: "Asciinema",
+    exts: ["cast"],
+    component: lazy(() => import("./asciinema")),
+  },
+  {
+    name: "Video360",
+    type: ObjType.VIDEO,
+    component: lazy(() => import("./video360")),
+  },
 ]
 
 export const getPreviews = (
   file: Obj & { provider: string },
 ): PreviewComponent[] => {
+  const { searchParams } = useRouter()
+  const typeOverride =
+    ObjType[searchParams["type"]?.toUpperCase() as keyof typeof ObjType]
   const res: PreviewComponent[] = []
   // internal previews
   previews.forEach((preview) => {
@@ -91,6 +105,7 @@ export const getPreviews = (
     }
     if (
       preview.type === file.type ||
+      (typeOverride && preview.type === typeOverride) ||
       preview.exts === "*" ||
       preview.exts?.includes(ext(file.name).toLowerCase())
     ) {

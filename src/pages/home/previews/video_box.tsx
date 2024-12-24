@@ -18,14 +18,29 @@ import { SelectWrapper } from "~/components"
 Artplayer.PLAYBACK_RATE = [0.5, 0.75, 1, 1.25, 1.5, 2, 3, 4]
 
 export const players: { icon: string; name: string; scheme: string }[] = [
-  { icon: "iina", name: "IINA", scheme: "iina://weblink?url=$durl" },
+  { icon: "iina", name: "IINA", scheme: "iina://weblink?url=$edurl" },
   { icon: "potplayer", name: "PotPlayer", scheme: "potplayer://$durl" },
   { icon: "vlc", name: "VLC", scheme: "vlc://$durl" },
   { icon: "nplayer", name: "nPlayer", scheme: "nplayer-$durl" },
   {
+    icon: "omniplayer",
+    name: "OmniPlayer",
+    scheme: "omniplayer://weblink?url=$durl",
+  },
+  {
+    icon: "figplayer",
+    name: "Fig Player",
+    scheme: "figplayer://weblink?url=$durl",
+  },
+  {
     icon: "infuse",
     name: "Infuse",
     scheme: "infuse://x-callback-url/play?url=$durl",
+  },
+  {
+    icon: "fileball",
+    name: "Fileball",
+    scheme: "filebox://play?url=$durl",
   },
   {
     icon: "mxplayer",
@@ -40,6 +55,26 @@ export const players: { icon: string; name: string; scheme: string }[] = [
       "intent:$durl#Intent;package=com.mxtech.videoplayer.pro;S.title=$name;end",
   },
 ]
+
+export const AutoHeightPlugin = (player: Artplayer) => {
+  const { $container, $video } = player.template
+  const $videoBox = $container.parentElement!
+
+  player.on("ready", () => {
+    const offsetBottom = "1.75rem" // position bottom of "More" button + padding
+    $videoBox.style.maxHeight = `calc(100vh - ${$videoBox.offsetTop}px - ${offsetBottom})`
+    $videoBox.style.minHeight = "320px" // min width of mobie phone
+    player.autoHeight()
+  })
+  player.on("resize", () => {
+    player.autoHeight()
+  })
+  player.on("error", () => {
+    if ($video.style.height) return
+    $container.style.height = "60vh"
+    $video.style.height = "100%"
+  })
+}
 
 export const VideoBox = (props: {
   children: JSXElement

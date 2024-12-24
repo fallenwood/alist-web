@@ -13,9 +13,9 @@ export default defineConfig({
   },
   plugins: [
     solidPlugin(),
-    legacy({
-      targets: ["defaults"],
-    }),
+    // legacy({
+    //   targets: ["defaults"],
+    // }),
     dynamicBase({
       // dynamic public path var string, default window.__dynamic_base__
       publicPath: " window.__dynamic_base__",
