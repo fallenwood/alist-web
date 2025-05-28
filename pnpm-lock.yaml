@@ -74,6 +74,9 @@ importers:
       hls.js:
         specifier: ^1.6.1
         version: 1.6.1
+      js-md5:
+        specifier: ^0.8.3
+        version: 0.8.3
       just-once:
         specifier: ^2.2.0
         version: 2.2.0
@@ -1247,6 +1250,9 @@ packages:
 
   isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
+
+  js-md5@0.8.3:
+    resolution: {integrity: sha512-qR0HB5uP6wCuRMrWPTrkMaev7MJZwJuuw4fnwAzRgP4J4/F8RwtodOKpGp4XpqsLBFzzgqIO42efFAyz2Et6KQ==}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -3164,6 +3170,8 @@ snapshots:
   is-what@4.1.7: {}
 
   isexe@2.0.0: {}
+
+  js-md5@0.8.3: {}
 
   js-tokens@4.0.0: {}
 
